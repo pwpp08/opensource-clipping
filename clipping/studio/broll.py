@@ -51,106 +51,60 @@ USED_PEXELS_IDS = set()
 
 
 def download_pexels_broll(query, rasio, output_filename, pexels_api_key):
-    """
-    Search and download one Pexels B-roll video clip matching the query and aspect ratio.
-
-    Args:
-        query (str): Search query term (e.g., 'nature', 'technology').
-        rasio (str): Target aspect ratio string (`9:16` for portrait or `16:9` for landscape).
-        output_filename (str): Local file path where the downloaded MP4 will be saved.
-        pexels_api_key (str): Valid Pexels API key for authorization.
-
-    Returns:
-        bool: True if the video was successfully downloaded and saved, False otherwise.
-
-    Side Effects:
-        Makes HTTP GET requests to the Pexels API and video CDN.
-        Mutates the global `USED_PEXELS_IDS` set to prevent duplicate downloads.
-        Writes a temporary file (`.part`) and renames it upon successful download.
-        Prints status and error messages to stdout.
-
-    Raises:
-        None explicitly. Exceptions during download or API calls are caught and return False.
-    """
     global USED_PEXELS_IDS
-
-    if not pexels_api_key:
-        print("   ⚠️ PEXELS_API_KEY tidak ditemukan. B-roll dilewati.")
+    api_key = (pexels_api_key or os.getenv("PIXABAY_API_KEY") or os.getenv("PEXELS_API_KEY") or "").strip()
+    if not api_key:
+        print(" ⚠️ PIXABAY/PEXELS_API_KEY tidak ditemukan. B-roll dilewati.")
         return False
 
-    orientation = "portrait" if _is_vertical_ratio(rasio) else "landscape"
-
-    params = urllib.parse.urlencode(
-        {
-            "query": query,
-            "orientation": orientation,
-            "per_page": 30,
-            "size": "large",
-            "resolution_name": "1080p",
-        }
-    )
-    search_url = f"https://api.pexels.com/videos/search?{params}"
-
-    req = urllib.request.Request(
-        search_url,
-        headers={
-            "Authorization": pexels_api_key,
-            "User-Agent": "Mozilla/5.0",
-        },
-    )
+    want_vertical = _is_vertical_ratio(rasio)
+    params = urllib.parse.urlencode({"key": api_key, "q": query, "per_page": 30, "safesearch": "true"})
+    req = urllib.request.Request(f"https://pixabay.com/api/videos/?{params}", headers={"User-Agent": FIREFOX_UA})
 
     try:
-        with urllib.request.urlopen(req) as response:
+        with urllib.request.urlopen(req, timeout=20) as response:
             data = json.load(response)
     except Exception as e:
-        print(f"   ⚠️ Error API Pexels saat mencari '{query}': {e}")
+        print(f" ⚠️ Error API Pixabay saat mencari '{query}': {e}")
         return False
 
-    if not data.get("videos"):
-        print(f"   ⚠️ Pexels tidak menemukan video untuk '{query}'.")
+    hits = data.get("hits", [])
+    if not hits:
+        print(f" ⚠️ Pixabay tidak menemukan video untuk '{query}'.")
         return False
 
-    available_videos = [v for v in data["videos"] if v["id"] not in USED_PEXELS_IDS]
-    if not available_videos:
-        print(f"   🔄 B-roll pool untuk '{query}' habis, me-reset.")
-        available_videos = data["videos"]
+    available_videos = [v for v in hits if v.get("id") not in USED_PEXELS_IDS] or hits
 
-    video_data = random.choice(available_videos)
-    USED_PEXELS_IDS.add(video_data["id"])
+    def _matches_orientation(hit):
+        vids = hit.get("videos", {})
+        sample = vids.get("medium") or vids.get("large") or vids.get("small") or {}
+        w, h = sample.get("width") or 0, sample.get("height") or 0
+        return ((h > w) if want_vertical else (w >= h)) if (w and h) else False
 
-    video_files = [
-        vf
-        for vf in video_data.get("video_files", [])
-        if vf.get("file_type") == "video/mp4"
+    oriented_pool = [v for v in available_videos if _matches_orientation(v)]
+    video_data = random.choice(oriented_pool or available_videos)
+    if "id" in video_data:
+        USED_PEXELS_IDS.add(video_data["id"])
+
+    videos_dict = video_data.get("videos", {})
+    candidates = [
+        (rank, -(videos_dict.get(q, {}).get("width") or 0), videos_dict[q]["url"])
+        for rank, q in enumerate(("large", "medium", "small", "tiny"))
+        if (videos_dict.get(q) or {}).get("url")
     ]
-    if not video_files:
-        print(f"   ⚠️ Tidak ada file MP4 di dalam data video '{query}'.")
+    if not candidates:
         return False
 
-    video_files.sort(
-        key=lambda vf: (
-            vf.get("quality") != "hd",
-            -(vf.get("width") or 0),
-            -(vf.get("height") or 0),
-        )
-    )
-
-    download_url = video_files[0]["link"]
-    download_req = urllib.request.Request(
-        download_url, headers={"User-Agent": "Mozilla/5.0"}
-    )
-
+    candidates.sort()
+    download_req = urllib.request.Request(candidates[0][2], headers={"User-Agent": FIREFOX_UA})
     try:
         temp_path = output_filename + ".part"
-        with (
-            urllib.request.urlopen(download_req) as response,
-            open(temp_path, "wb") as f,
-        ):
+        with urllib.request.urlopen(download_req, timeout=30) as response, open(temp_path, "wb") as f:
             shutil.copyfileobj(response, f)
         os.replace(temp_path, output_filename)
         return True
     except Exception as e:
-        print(f"   ⚠️ Error saat mengunduh B-roll '{query}': {e}")
+        print(f" ⚠️ Error saat mengunduh B-roll Pixabay '{query}': {e}")
         return False
 
 
