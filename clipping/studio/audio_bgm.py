@@ -1,8 +1,6 @@
-"""
-audio_bgm.py — Local BGM asset resolver.
+"""audio_bgm.py — Local BGM asset resolver.
 
-Reads MP3 files from assets/bgm/<mood>/ directories and selects one at random.
-"""
+Reads MP3 files from assets/bgm/<mood>/ directories and selects one at random."""
 
 import os
 import random
@@ -34,8 +32,7 @@ def get_local_bgm_file(mood, bgm_dir):
 
 
 def build_bgm_filter(bgm_mode, bgm_base_volume, audio_input_voc="[1:a]", audio_input_bgm="[2:a]"):
-    """
-    Build the FFmpeg filter_complex string for BGM mixing.
+    """Build the FFmpeg filter_complex string for BGM mixing.
 
     Args:
         bgm_mode (str): 'ducking' for sidechain compress, 'background' for constant volume mix.
@@ -44,8 +41,7 @@ def build_bgm_filter(bgm_mode, bgm_base_volume, audio_input_voc="[1:a]", audio_i
         audio_input_bgm (str): FFmpeg stream label for BGM audio input.
 
     Returns:
-        str: The filter_complex string for FFmpeg.
-    """
+        str: The filter_complex string for FFmpeg."""
     voc_format = f"{audio_input_voc}aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,volume=1.2[voc]"
     bgm_format = f"{audio_input_bgm}aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,volume={bgm_base_volume}[bgm]"
 

@@ -61,15 +61,14 @@ def buat_video_camera_switch(
     cfg,
     label="CameraSwitch",
 ):
-    """
-    Render a dynamic camera-switch video, which cuts between active speakers automatically.
+    """Render a dynamic camera-switch video, which cuts between active speakers automatically.
 
     Args:
         input_video (str): Path to input video file.
         output_video (str): Path to output video file.
         start_clip (float): Subclip start boundary in seconds.
         end_clip (float): Subclip end boundary in seconds.
-        rasio (str): Output ratio string ('9:16' or '16:9').
+        ratio (str): Output ratio string ('9:16' or '16:9').
         cfg: The runtime config containing camera-switch timing preferences.
         broll_data (list, optional): Data about B-roll sequences to blend in.
         label (str, optional): Progress reporting name.
@@ -83,8 +82,7 @@ def buat_video_camera_switch(
         Outputs via `run_ffmpeg_with_progress`.
 
     Raises:
-        May raise Exceptions if FFMPEG piped commands fail.
-    """
+        May raise Exceptions if FFMPEG piped commands fail."""
     from clipping.diarization import get_active_speakers
 
     STEP_DETEKSI     = cfg.track_step if cfg.track_step is not None else 0.25

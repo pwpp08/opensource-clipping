@@ -108,22 +108,20 @@ def _trace_render_failure(error, stage, rank, fallback=False):
 def proses_klip(
     rank, clip, rasio, glitch_ts, data_segmen, cfg, video_encoder, diarization_data=None
 ):
-    """
-    Run full clip processing pipeline from render to final output files.
+    """Run full clip processing pipeline from render to final output files.
 
     Args:
         rank: Clip rank/index.
         clip: Clip metadata object.
-        rasio: Target output ratio.
+        ratio: Target output ratio.
         glitch_ts: Optional prepared glitch transition path.
-        data_segmen: Transcript segments.
+        segment_data: Transcript segments.
         cfg: Runtime config object.
         video_encoder: Encoder descriptor dict.
         diarization_data: Optional speaker diarization metadata.
 
     Returns:
-        Manifest dictionary describing processing result and output paths.
-    """
+        Manifest dictionary describing processing results and output paths."""
     get_x_h = None
     get_x_main = None
     h_start = float(clip.get("hook_start_time", clip["start_time"]))
@@ -375,7 +373,7 @@ def proses_klip(
         elif aktif_hook:
             get_x_h = None
             if use_split:
-                print("   📸 [Hook] Split-screen render (Custom Hook diabaikan untuk format ini saat ini atau digabung)...")
+                print("📸 [Hook] Split-screen render (Custom Hook ignored for this format currently or merged)...")
                 get_x_h = buat_video_split_screen(
                     file_hook_src,
                     h_silent,
@@ -425,7 +423,7 @@ def proses_klip(
                     source_dim=source_dim,
                 )
 
-                print("   🎬 [Hook] FFmpeg burn subtitle + audio...")
+                print("🎬 [Hook] FFmpeg burn subtitles + audio...")
                 esc_ass_hook = escape_ffmpeg_filter_value(os.path.abspath(a_hook))
                 esc_fontsdir = escape_ffmpeg_filter_value(os.path.abspath(cfg.font_dir))
                 vf_hook_list = [f"subtitles={esc_ass_hook}:fontsdir={esc_fontsdir}"]
@@ -466,7 +464,7 @@ def proses_klip(
                 cmd_h, h_end - h_start, label=f"Rank {rank} Hook FFmpeg"
             )
             if rc_h != 0:
-                raise RuntimeError("FFmpeg hook gagal:\n" + "\n".join(err_h))
+                raise RuntimeError("FFmpeg hook failed:\\n" + "\n".join(err_h))
 
         # MAIN
         render_stage = "main"
@@ -572,13 +570,13 @@ def proses_klip(
                 print(f"   🎵 Mencari file BGM lokal (Mood: {bgm_mood})...")
                 file_bgm = get_local_bgm_file(bgm_mood, getattr(cfg, "bgm_dir", os.path.join(cfg.base_dir, "assets", "bgm")))
                 if not file_bgm and bgm_mood != "chill":
-                    print("   🔄 Fallback mencari BGM chill...")
+                    print("🔄 Fallback looking for BGM chill...")
                     file_bgm = get_local_bgm_file("chill", getattr(cfg, "bgm_dir", os.path.join(cfg.base_dir, "assets", "bgm")))
                 
                 if file_bgm:
                     print(f"   ✅ BGM siap: {file_bgm}")
                 else:
-                    print("   ⚠️ Folder BGM kosong atau file mp3 tidak ditemukan. Render lanjut tanpa BGM.")
+                    print("⚠️ BGM folder is empty or mp3 file not found. Advanced rendering without BGM.")
 
             if aktif_bgm and file_bgm:
                 print("   🎵 Applying BGM to segmented clip...")
@@ -676,13 +674,13 @@ def proses_klip(
                 print(f"   🎵 Mencari file BGM lokal (Mood: {bgm_mood})...")
                 file_bgm = get_local_bgm_file(bgm_mood, getattr(cfg, "bgm_dir", os.path.join(cfg.base_dir, "assets", "bgm")))
                 if not file_bgm and bgm_mood != "chill":
-                    print("   🔄 Fallback mencari BGM chill...")
+                    print("🔄 Fallback looking for BGM chill...")
                     file_bgm = get_local_bgm_file("chill", getattr(cfg, "bgm_dir", os.path.join(cfg.base_dir, "assets", "bgm")))
                 
                 if file_bgm:
                     print(f"   ✅ BGM siap: {file_bgm}")
                 else:
-                    print("   ⚠️ Folder BGM kosong atau file mp3 tidak ditemukan. Render lanjut tanpa BGM.")
+                    print("⚠️ BGM folder is empty or mp3 file not found. Advanced rendering without BGM.")
 
             # --- Subtitle & BGM Encoding Loop (Handles dual output files if needed) ---
             runs = [m_silent] if not dev_dual else [m_silent, m_silent.replace(".ts", "_dev.ts")]

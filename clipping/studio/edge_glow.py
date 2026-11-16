@@ -1,5 +1,4 @@
-"""
-clipping.studio.edge_glow — Ambient Gradient Edge Glow Generator
+"""clipping.studio.edge_glow — Ambient Gradient Edge Glow Generator
 
 Generates a short looping video of slow-moving gradient light along
 the edges of the frame.  Used as an overlay during voice-over intros
@@ -10,8 +9,7 @@ Strategy:
   2. For each frame, compute a slowly-rotating hue gradient that
      flows around the perimeter of the rectangle.
   3. Write out as MP4 with black background — the caller composites
-     it using FFmpeg ``blend=screen`` or ``blend=lighten``.
-"""
+     it uses FFmpeg ``blend=screen`` or ``blend=lighten``."""
 
 import math
 import os
@@ -31,8 +29,7 @@ def generate_edge_glow_video(
     opacity: float = 0.45,
     seamless_loop: bool = True,
 ):
-    """
-    Generate a looping edge-glow overlay video (black-based, to be blended).
+    """Generate a looping edge-glow overlay video (black-based, to be blended).
 
     Parameters
     ----------
@@ -53,8 +50,7 @@ def generate_edge_glow_video(
     seamless_loop : bool
         When True, auto-adjust glow_speed so that ``duration * speed``
         equals an integer, guaranteeing the hue returns to its starting
-        position at the loop boundary (no visible stutter/flash).
-    """
+        position at the loop boundary (no visible stutter/flash)."""
     # ---- 0. Ensure seamless loop (adjust speed for integer rotations) ----
     if seamless_loop and duration > 0:
         raw_rotations = duration * glow_speed

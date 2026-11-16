@@ -89,9 +89,9 @@ def _build_tiktok_caption(caption, hashtags):
 def _looks_indonesian(text):
     text = f" {_normalize_spaces(text).lower()} "
     indikator = [
-        " yang ", " dan ", " untuk ", " dengan ", " karena ", " adalah ",
-        " bisa ", " tidak ", " lebih ", " dalam ", " pada ", " agar ",
-        " dari ", " ini ", " itu ", " juga ", " kalau ", " saat ",
+        "Which", "And", "For", "with", "Because", " adalah ",
+        " bisa ", "No", " lebih ", " dalam ", "on", " agar ",
+        "from", " ini ", " itu ", " juga ", " kalau ", "moment",
         " tentang ", " bikin ", " banget ", " jadi ", " sudah ",
     ]
     return any(w in text for w in indikator)
@@ -260,7 +260,7 @@ def normalize_and_validate(hasil_json: list[dict]) -> list[dict]:
 def print_preview(hasil_json: list[dict]) -> None:
     """Print a human-readable metadata preview to stdout."""
     print("✅ Preview metadata siap.")
-    print("Field tambahan yang dibuat:")
+    print("Additional fields created:")
     print("- youtube_title_final")
     print("- youtube_description_final")
     print("- youtube_tags_final")
@@ -269,7 +269,7 @@ def print_preview(hasil_json: list[dict]) -> None:
     print("- tiktok_caption_id_final")
     print()
 
-    print("===== PREVIEW DETAIL PER KLIP =====")
+    print("===== PREVIEW DETAILS PER CLIP =====")
     for item in hasil_json:
         klasifikasi = item.get("klasifikasi_akun", {})
         print(f"\n--- Rank {item['rank']} (Viral Score: {item.get('viral_score', '?')}) ---")

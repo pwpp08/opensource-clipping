@@ -2,10 +2,8 @@ import os
 import shutil
 
 def download_custom_hook(cfg) -> str | None:
-    """
-    Mengunduh atau menyalin file tunggal custom hook dari argumen --hook-source.
-    Returns: absolute path ke file lokal, atau None jika gagal/tidak ada.
-    """
+    """Downloads or copies a single custom hook file from the --hook-source argument.
+    Returns: absolute path to local file, or None if failed/does not exist."""
     source = cfg.hook_source
     if not source:
         return None

@@ -13,11 +13,10 @@ from . import engine, metadata, studio, hook_manager, voiceover
 
 
 def run_pipeline(cfg, whisper_model_instance=None) -> list[dict]:
-    """
-    Run the full clipping pipeline:
-      1. Download YouTube video
+    """Run the full clipping pipeline:
+      1. Download YouTube videos
       2. Transcribe with Whisper
-      3. Analyse with Gemini AI
+      3. Analyze with Gemini AI
       4. Normalize metadata
       5. Prepare glitch transition
       6. Render each clip
@@ -28,13 +27,12 @@ def run_pipeline(cfg, whisper_model_instance=None) -> list[dict]:
     cfg : SimpleNamespace
         Configuration object from ``config.build_config()``.
     whisper_model_instance : WhisperModel or None
-        Optional pre-loaded WhisperModel to reuse across batch runs.
+        Optionally pre-loaded WhisperModel to reuse across batch runs.
 
     Returns
     -------
-    list[dict]
-        Render manifest (one dict per clip).
-    """
+    lists[dict]
+        Render manifest (one dict per clip)."""
 
     # Step 1 — Download
     source_platform = getattr(cfg, "source_platform", "youtube")
@@ -144,7 +142,7 @@ def run_pipeline(cfg, whisper_model_instance=None) -> list[dict]:
                 os.remove(audio_path)
         except Exception as e:
             print(f"⚠️ Diarization gagal: {e}")
-            print("   Fallback ke mode render biasa (tanpa split-screen).")
+            print("Fallback to regular rendering mode (no split-screen).")
             diarization_data = None
 
     # Step 6 — Video encoder & glitch
@@ -163,7 +161,7 @@ def run_pipeline(cfg, whisper_model_instance=None) -> list[dict]:
 
     file_glitch_ts = None
     if cfg.use_hook_glitch:
-        print("⚙️ Menyiapkan Video Glitch Transisi...")
+        print("⚙️ Setting Up Transition Glitch Video...")
         
         # Get source dimensions for proper glitch scaling
         import cv2
@@ -180,7 +178,7 @@ def run_pipeline(cfg, whisper_model_instance=None) -> list[dict]:
 
     custom_hook_path = None
     if getattr(cfg, "hook_source", None):
-        print("\n🎣 Mengunduh sumber klip Hook kustom...")
+        print("\\n🎣 Downloading a custom Hook clip source...")
         custom_hook_path = hook_manager.download_custom_hook(cfg)
 
     # Step 5.5 — Generate Voice-Over (if enabled)

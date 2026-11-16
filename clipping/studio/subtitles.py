@@ -64,18 +64,17 @@ def buat_file_ass(
     get_x_func=None,
     source_dim=None,
 ):
-    """
-    Build and write an Advanced SubStation Alpha (ASS) subtitle file for a video clip.
+    """Build and write an Advanced SubStation Alpha (ASS) subtitle file for a video clip.
 
     Args:
-        data_segmen (list): A list of dictionaries containing transcript segments and their timing.
+        data_segment (list): A list of dictionaries containing transcript segments and their timing.
         start_clip (float): The starting timestamp of the clip in the original video (in seconds).
         end_clip (float): The ending timestamp of the clip in the original video (in seconds).
-        nama_file_ass (str): The destination file path to save the generated ASS file.
-        rasio (str): The target aspect ratio ('9:16' or '16:9').
-        cfg: Runtime configuration object specifying styling, fonts, and render settings.
+        name_ass_file (str): The destination file path to save the generated ASS file.
+        ratio (str): The target aspect ratio ('9:16' or '16:9').
+        cfg: Runtime configuration object specifying styling, fonts, and rendering settings.
         typography_plan (list, optional): A list of dictionaries specifying emphasis and animation for specific words. Defaults to None.
-        gunakan_advanced (bool, optional): Whether to use advanced positioning and animations. Defaults to True.
+        use_advanced (bool, optional): Whether to use advanced positioning and animations. Defaults to True.
         get_x_func (callable, optional): A function taking a timestamp and returning the X-coordinate for dynamic tracking.
         source_dim (tuple, optional): Source video dimension tuple `(width, height)`.
 
@@ -83,11 +82,10 @@ def buat_file_ass(
         None
 
     Side Effects:
-        Writes formatting and subtitle event data to the local file specified by `nama_file_ass`.
+        Writes formatting and subtitle event data to the local file specified by `ass_file_name`.
 
     Raises:
-        FileNotFoundError: If advanced mode is used and the configured font files are missing from the font directory.
-    """
+        FileNotFoundError: If advanced mode is used and the configured font files are missing from the font directory."""
     if typography_plan is None:
         typography_plan = []
 

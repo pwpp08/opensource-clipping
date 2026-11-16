@@ -54,7 +54,7 @@ def download_pexels_broll(query, rasio, output_filename, pexels_api_key):
     global USED_PEXELS_IDS
     api_key = (pexels_api_key or os.getenv("PIXABAY_API_KEY") or os.getenv("PEXELS_API_KEY") or "").strip()
     if not api_key:
-        print(" ⚠️ PIXABAY/PEXELS_API_KEY tidak ditemukan. B-roll dilewati.")
+        print(" ⚠️ PIXABAY/PEXELS_API_KEY not found. Skipping B-roll.")
         return False
 
     want_vertical = _is_vertical_ratio(rasio)
@@ -65,12 +65,12 @@ def download_pexels_broll(query, rasio, output_filename, pexels_api_key):
         with urllib.request.urlopen(req, timeout=20) as response:
             data = json.load(response)
     except Exception as e:
-        print(f" ⚠️ Error API Pixabay saat mencari '{query}': {e}")
+        print(f" ⚠️ Pixabay API error while searching '{query}': {e}")
         return False
 
     hits = data.get("hits", [])
     if not hits:
-        print(f" ⚠️ Pixabay tidak menemukan video untuk '{query}'.")
+        print(f" ⚠️ Pixabay found no videos for '{query}'.")
         return False
 
     available_videos = [v for v in hits if v.get("id") not in USED_PEXELS_IDS] or hits
@@ -104,7 +104,7 @@ def download_pexels_broll(query, rasio, output_filename, pexels_api_key):
         os.replace(temp_path, output_filename)
         return True
     except Exception as e:
-        print(f" ⚠️ Error saat mengunduh B-roll Pixabay '{query}': {e}")
+        print(f" ⚠️ Error downloading Pixabay B-roll '{query}': {e}")
         return False
 
 

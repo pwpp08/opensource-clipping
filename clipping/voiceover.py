@@ -111,12 +111,10 @@ async def _synthesize_async(text: str, voice: str, output_audio_path: str, outpu
     return []
 
 def synthesize_voice(text: str, voice: str, output_dir: str, clip_id: str) -> tuple[str, list[dict]]:
-    """
-    Synthesize text to speech using edge-tts.
+    """Synthesize text to speech using edge-tts.
     
     Returns:
-        tuple[str, list[dict]]: (path_to_audio_mp3, list_of_subtitle_segments)
-    """
+        tuple[str, list[dict]]: (path_to_audio_mp3, list_of_subtitle_segments)"""
     os.makedirs(output_dir, exist_ok=True)
     audio_path = os.path.join(output_dir, f"vo_clip_{clip_id}.mp3")
     subs_path = os.path.join(output_dir, f"vo_clip_{clip_id}.vtt")
@@ -165,15 +163,15 @@ def _consolidate_segments(raw_segments: list[dict], words_per_seg: int = 3) -> l
 # ==============================================================================
 
 def get_commentary_prompt(transcript_snippet: str, style: str, language: str, length: str) -> str:
-    lang_instruction = "Gunakan bahasa Indonesia yang gaul tapi profesional (seperti narator YouTube/TikTok)."
+    lang_instruction = "Use slang but professional Indonesian (like a YouTube/TikTok narrator)."
     if language == "en":
         lang_instruction = "Use engaging, conversational English suitable for a YouTube/TikTok narrator."
         
     style_instructions = {
-        "analysis": "Berikan analisis tajam atau opini insightfull tentang kenapa momen ini penting atau menarik.",
-        "reaction": "Berikan reaksi natural seolah kamu sedang menonton momen ini dan terkesan/terkejut.",
-        "lesson": "Tarik satu pelajaran atau 'moral of the story' yang bisa diaplikasikan penonton dari momen ini.",
-        "summary": "Berikan konteks atau ringkasan singkat tapi memikat tentang apa yang terjadi di momen ini."
+        "analysis": "Provide sharp analysis or insightful opinions about why this moment is important or interesting.",
+        "reaction": "Give a natural reaction as if you are watching this moment and are impressed/surprised.",
+        "lesson": "Draw a lesson or 'moral of the story' that the audience can apply from this moment.",
+        "summary": "Provide context or a brief but compelling summary of what is happening in this moment."
     }
     
     if language == "en":
@@ -186,11 +184,11 @@ def get_commentary_prompt(transcript_snippet: str, style: str, language: str, le
         
     chosen_style = style_instructions.get(style, style_instructions["analysis"])
 
-    length_instruction = "berdurasi pendek (3-5 kalimat, sekitar 20-40 detik saat diucapkan)"
+    length_instruction = "short duration (3-5 sentences, about 20-40 seconds when spoken)"
     if length == "short":
-        length_instruction = "berdurasi sangat pendek (1-2 kalimat, sekitar 5-15 detik saat diucapkan)"
+        length_instruction = "very short in duration (1-2 sentences, about 5-15 seconds when spoken)"
     elif length == "long":
-        length_instruction = "berdurasi lumayan panjang (5-7 kalimat, sekitar 40-60 detik saat diucapkan)"
+        length_instruction = "fairly long in duration (5-7 sentences, around 40-60 seconds when spoken)"
     if language == "en":
         length_instruction = "short duration (3-5 sentences, around 20-40 seconds when spoken)"
         if length == "short":
@@ -224,7 +222,7 @@ def generate_commentary_script(transcript_snippet: str, cfg, style="analysis", l
     
     api_key = cfg.api_key_gemini
     if not api_key:
-        raise ValueError("GOOGLE_API_KEY tidak ditemukan di environment atau config.")
+        raise ValueError("GOOGLE_API_KEY not found in environment or config.")
 
     client = genai.Client(
         api_key=api_key,

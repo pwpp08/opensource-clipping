@@ -1,10 +1,8 @@
-"""
-clipping.diarization — Speaker Diarization with Pyannote
+"""clipping.diarization — Speaker Diarization with Pyannote
 
-Deteksi speaker berbeda dalam audio/video menggunakan model
-pyannote/speaker-diarization-3.1. Digunakan untuk fitur split-screen
-pada klip podcast.
-"""
+Detect different speakers in audio/video using models
+pyannote/speaker-diarization-3.1. Used for the split-screen feature
+on a podcast clip."""
 
 import os
 import subprocess
@@ -16,8 +14,7 @@ from pathlib import Path
 
 
 def extract_audio(video_path: str, audio_output_path: str) -> str:
-    """
-    Extract audio from video to WAV using FFmpeg.
+    """Extract audio from video to WAV using FFmpeg.
 
     Parameters
     ----------
@@ -29,8 +26,7 @@ def extract_audio(video_path: str, audio_output_path: str) -> str:
     Returns
     -------
     str
-        Path to the extracted audio file.
-    """
+        Path to the extracted audio file."""
     # FFmpeg's -y handles an existing output. Never unlink the input when a
     # caller accidentally supplies the same path (including a link alias).
     source = Path(video_path)
@@ -38,7 +34,7 @@ def extract_audio(video_path: str, audio_output_path: str) -> str:
     if source.resolve() == output.resolve() or (
         source.exists() and output.exists() and os.path.samefile(source, output)
     ):
-        raise ValueError("Audio output must be different from the input video")
+        raise ValueError("Audio output must be different from the video input")
 
     cmd = [
         "ffmpeg",
@@ -77,13 +73,12 @@ def run_diarization(
     min_speakers: int | None = None,
     max_speakers: int | None = None,
 ) -> list[dict]:
-    """
-    Run speaker diarization using Pyannote.
+    """Run speaker diarization using Pyannote.
 
     Parameters
     ----------
     audio_path : str
-        Path to WAV audio file.
+        Path to WAV audio files.
     hf_token : str
         HuggingFace token (required for pyannote model access).
     num_speakers : int | str
@@ -95,19 +90,18 @@ def run_diarization(
 
     Returns
     -------
-    list[dict]
+    lists[dict]
         List of dicts with keys: speaker, start, end.
         Example: [{"speaker": "SPEAKER_00", "start": 0.5, "end": 3.2}, ...]
 
     Raises
     ------
     RuntimeError
-        If diarization fails or produces no segments.
-    """
+        If diarization fails or produces no segments."""
     if not hf_token:
         raise RuntimeError(
-            "HF_TOKEN tidak ditemukan. Pyannote membutuhkan HuggingFace token. "
-            "Set via: export HF_TOKEN='your-token' atau di file .env"
+            "HF_TOKEN not found. Pyannote requires the HuggingFace token."
+            "Set via: export HF_TOKEN='your-token' or in the .env file"
         )
 
     print("🎙️ Memuat model Pyannote speaker-diarization-3.1...")
@@ -134,11 +128,11 @@ def run_diarization(
             import torch
 
             pipeline.to(torch.device("cuda"))
-            print("   ✅ Pyannote menggunakan GPU (CUDA)")
+            print("✅ Pyannote uses GPU (CUDA)")
         else:
-            print("   ℹ️ Pyannote menggunakan CPU")
+            print("ℹ️ Pyannote uses CPU")
     except Exception:
-        print("   ℹ️ Pyannote menggunakan CPU")
+        print("ℹ️ Pyannote uses CPU")
 
     print("🎙️ Menjalankan speaker diarization...")
     if str(num_speakers).lower() == "auto":
@@ -178,11 +172,11 @@ def run_diarization(
     except AttributeError as e:
         raise RuntimeError(
             f"Gagal memproses hasil diarization ({type(diarization)}): {e}. "
-            "Pastikan model pyannote/speaker-diarization-3.1 terinstal dengan benar."
+            "Make sure the pyannote/speaker-diarization-3.1 model is installed correctly."
         )
 
     if not raw_segments:
-        raise RuntimeError("Diarization tidak menghasilkan segment apapun.")
+        raise RuntimeError("Diarization does not produce any segments.")
 
     # Merge adjacent segments from same speaker (gap < 0.5s)
     merged = _merge_adjacent_segments(raw_segments, max_gap=0.5)

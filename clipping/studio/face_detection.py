@@ -102,8 +102,7 @@ def get_face_detector(cfg):
 
 
 def estimate_speaker_count_from_video(video_path: str, cfg) -> int:
-    """
-    Sample frames from the video to estimate the max number of visible faces.
+    """Sample frames from the video to estimate the max number of visible faces.
     Used for automatically setting min_speakers for pyannote.
 
     Args:
@@ -111,15 +110,14 @@ def estimate_speaker_count_from_video(video_path: str, cfg) -> int:
         cfg: Runtime configuration that may specify 'face_detector' (e.g. 'yolo' or 'mediapipe').
 
     Returns:
-        int: The estimated maximum number of speakers (faces) present in any sampled frame. Defaults to 2 if unsure.
+        int: The estimated maximum number of speakers (faces) present in any sampled frame. Defaults to 2 if element.
 
     Side Effects:
         Downloads YOLO face detection model if it's set in config and doesn't exist.
         Prints scanning progress logs to stdout.
 
     Raises:
-        Exception: General exceptions may occur during YOLO initialization, falling back to Mediapipe.
-    """
+        Exception: General exceptions may occur during YOLO initialization, falling back to Mediapipe."""
     import cv2
 
     print("🔍 Auto-detecting speaker count via visual scanning...", flush=True)

@@ -44,16 +44,15 @@ run_ffmpeg_with_progress = _ffmpeg_utils.run_ffmpeg_with_progress
 
 
 def buat_thumbnail(video_path, output_image_path, teks, cfg):
-    """
-    Extract a frame from the video, composite the clip title on top, and save as a thumbnail image.
+    """Extract a frame from the video, composite the clip title on top, and save as a thumbnail image.
 
     Args:
         input_video (str): Path to the source video file.
         output_image (str): Destination path for the generated JPEG thumbnail.
         start_clip (float): Clip start time in seconds (to locate a frame).
         end_clip (float): Clip end time in seconds.
-        judul (str): The title text to be written on the thumbnail.
-        rasio (str): Target output ratio string ('9:16' or '16:9').
+        title (str): The title text to be written on the thumbnail.
+        ratio (str): Target output ratio string ('9:16' or '16:9').
         cfg: Runtime configuration object.
 
     Returns:
@@ -64,8 +63,7 @@ def buat_thumbnail(video_path, output_image_path, teks, cfg):
         Writes a JPEG file to `output_image`.
 
     Raises:
-        Exception: If image processing or saving fails.
-    """
+        Exception: If image processing or saving fails."""
     if not os.path.exists(cfg.file_font_thumbnail):
         urllib.request.urlretrieve(cfg.url_font_thumbnail, cfg.file_font_thumbnail)
 

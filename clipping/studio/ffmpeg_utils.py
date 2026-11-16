@@ -80,10 +80,8 @@ def _get_auto_bitrate(height: int) -> str:
 
 
 def detect_video_encoder(cfg=None, target_h=1080):
-    """
-    Select the best available video encoder with conservative fallback.
-    Now supports dynamic bitrate scaling for TikTok optimization.
-    """
+    """Select the best available video encoder with conservative fallback.
+    Now supports dynamic bitrate scaling for TikTok optimization."""
     nvenc_preset_fast = "p1"
     nvenc_preset_legacy = "fast"
     nvenc_cq = 25
@@ -175,16 +173,14 @@ def detect_video_encoder(cfg=None, target_h=1080):
 
 
 def get_ts_encode_args(video_encoder, fps=30):
-    """
-    Build FFmpeg encode args for MPEG-TS output.
+    """Build FFmpeg encode args for MPEG-TS output.
 
     Args:
         video_encoder: Encoder descriptor from `detect_video_encoder`.
         fps: Target frame rate.
 
     Returns:
-        FFmpeg argument list for TS output.
-    """
+        FFmpeg argument list for TS output."""
     return video_encoder["args"] + [
         "-pix_fmt",
         "yuv420p",
@@ -202,16 +198,14 @@ def get_ts_encode_args(video_encoder, fps=30):
 
 
 def get_mp4_encode_args(video_encoder, fps):
-    """
-    Build FFmpeg encode args for MP4 output.
+    """Build FFmpeg encode args for MP4 output.
 
     Args:
         video_encoder: Encoder descriptor from `detect_video_encoder`.
         fps: Target frame rate.
 
     Returns:
-        FFmpeg argument list for MP4 output.
-    """
+        FFmpeg argument list for MP4 output."""
     return video_encoder["args"] + [
         "-pix_fmt",
         "yuv420p",
@@ -223,8 +217,7 @@ def get_mp4_encode_args(video_encoder, fps):
 
 
 def open_ffmpeg_video_writer(output_path, width, height, fps, video_encoder):
-    """
-    Start an FFmpeg process that accepts raw BGR frames via stdin.
+    """Start an FFmpeg process that accepts raw BGR frames via stdin.
 
     Args:
         output_path: Target MP4 path.
@@ -234,8 +227,7 @@ def open_ffmpeg_video_writer(output_path, width, height, fps, video_encoder):
         video_encoder: Encoder descriptor from `detect_video_encoder`.
 
     Returns:
-        Running `subprocess.Popen` object.
-    """
+        Running `subprocess.Popen` object."""
     cmd = (
         [
             "ffmpeg",

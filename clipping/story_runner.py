@@ -25,8 +25,7 @@ def _transcribe_sources(
     cache_dir: str,
     cfg,
 ) -> dict[str, dict]:
-    """
-    Transcribe all cached source videos using Faster-Whisper.
+    """Transcribe all cached source videos using Faster-Whisper.
 
     Parameters
     ----------
@@ -40,8 +39,7 @@ def _transcribe_sources(
     Returns
     -------
     dict[str, dict]
-        Mapping of source_id → {"transkrip": str, "segmen": list, "path": str}.
-    """
+        Mapping of source_id → {"transkrip": str, "segmen": list, "path": str}."""
     # Lazy import to avoid pulling in heavy deps
     try:
         from . import engine

@@ -77,7 +77,7 @@ def _download_gdrive(url: str, output_path: str) -> None:
     if not file_id:
         raise RuntimeError(
             f"Tidak dapat mengekstrak file ID dari URL Google Drive: {url}\n"
-            "      Format yang didukung:\n"
+            "Supported formats:\\n"
             "        • https://drive.google.com/file/d/FILE_ID/view\n"
             "        • https://drive.google.com/open?id=FILE_ID"
         )
@@ -88,12 +88,11 @@ def _download_gdrive(url: str, output_path: str) -> None:
 
 
 def _ydl_progress_hook(d: dict) -> None:
-    """Render satu baris progress bar download dari data hook yt-dlp.
+    """Render one row of download progress bar from yt-dlp data hook.
 
-    yt-dlp mengunduh stream video dan audio secara terpisah, jadi hook ini
-    dipanggil untuk masing-masing; newline saat "finished" menjaga tiap bar
-    berada di barisnya sendiri.
-    """
+    yt-dlp downloads video and audio streams separately, so this hooks
+    called for each; newline when "finished" keeps each bar
+    is on its own line."""
     status = d.get("status")
     if status == "downloading":
         total = d.get("total_bytes") or d.get("total_bytes_estimate")
@@ -140,15 +139,13 @@ def download_video(
     source_platform: str = "youtube",
     yt_cookies: str | None = None,
 ) -> None:
-    """
-    Download a video to *output_path* with configurable source height.
+    """Download a video to *output_path* with configurable source height.
 
     Parameters
     ----------
     source_platform : str
         One of ``"youtube"`` (default), ``"tiktok"``, ``"instagram"``,
-        or ``"gdrive"``.
-    """
+        or ``"gdrive"``."""
     platform_label = _PLATFORM_LABELS.get(source_platform, source_platform)
     uses_youtube_format = source_platform == "youtube"
 
@@ -196,7 +193,7 @@ def download_video(
 
     # --- Subtitle download — only supported for YouTube ---
     if use_dlp_subs and uses_youtube_format:
-        print("      Mencoba mencari subtitle bahasa otomatis (en / id)...")
+        print("Trying to search for automatic language subtitles (en/id)...")
         import glob
 
         for lang in ["en", "id"]:
@@ -239,7 +236,7 @@ def download_video(
     if not os.path.exists(output_path):
         raise RuntimeError(
             f"❌ Download dari {platform_label} gagal — file video tidak ditemukan di {output_path}.\n"
-            "      Pastikan URL valid dan bisa diakses secara publik."
+            "Make sure the URL is valid and publicly accessible."
         )
 
 
@@ -254,7 +251,7 @@ def parse_youtube_json3_subs(json_path: str, max_words_per_subtitle: int = 5) ->
     """
     import json
 
-    print("[2/3] Memproses subtitle JSON3 dari YouTube...")
+    print("[2/3] Processing JSON3 subtitles from YouTube...")
     transkrip_lengkap = ""
     data_segmen = []
 
@@ -366,8 +363,7 @@ def transcribe_video(
     compute_type: str = "float16",
     whisper_model_instance=None,
 ) -> tuple[str, list[dict]]:
-    """
-    Transcribe *video_path* using Faster-Whisper.
+    """Transcribe *video_path* using Faster-Whisper.
 
     Parameters
     ----------
@@ -379,12 +375,11 @@ def transcribe_video(
 
     Returns
     -------
-    transkrip_lengkap : str
+    full_transcript : str
         Human-readable transcript with timestamps.
-    data_segmen : list[dict]
-        Word-level segments grouped by *max_words_per_subtitle*.
-    """
-    print("[2/3] Memulai transkripsi dengan Faster-Whisper (Level Per-Kata)...")
+    segment_data : list[dict]
+        Word-level segments grouped by *max_words_per_subtitle*."""
+    print("[2/3] Start transcription with Faster-Whisper (Per-Word Level)...")
 
     # Langkah-langkah ini berjalan tanpa output di dalam faster-whisper sebelum
     # segmen pertama dihasilkan, jadi kita umumkan tiap fase — kalau tidak, run
@@ -403,7 +398,7 @@ def transcribe_video(
         )
         model = WhisperModel(model_size, device=device, compute_type=compute_type)
 
-    print("      ⏳ Mendekode audio & mengekstrak fitur (belum ada output)...", flush=True)
+    print("⏳ Decode audio & extract feature (no output yet)...", flush=True)
     segments, info = model.transcribe(video_path, beam_size=5, word_timestamps=True)
 
     transkrip_lengkap = ""
@@ -417,7 +412,7 @@ def transcribe_video(
     progress = tqdm(
         total=total_dur,
         unit="s",
-        desc="      Transkripsi",
+        desc="Transcription",
         bar_format="{desc}: {percentage:3.0f}%|{bar}| {n:.0f}/{total:.0f}s [{elapsed}<{remaining}]",
     )
 
@@ -460,22 +455,22 @@ def transcribe_video(
 TARGET_ACCOUNTS = {
     "Business": {
         "akun_tujuan": "Business.Mereska",
-        "angle_desc": "Kalau angle-nya bisnis, brand, omzet, jualan, founder, marketing, atau UMKM.",
+        "angle_desc": "If the angle is business, brand, turnover, sales, founder, marketing, or MSME.",
         "bio": "Insight bisnis, founder story & brand lokal. Business | Founder | Finance | Beauty | Marketing"
     },
     "Life": {
         "akun_tujuan": "Life.Mereska",
-        "angle_desc": "Kalau angle-nya personal life, lifestyle, skincare, career, mindset, relationship, personal finance, atau self growth.",
-        "bio": "Klip insight buat upgrade hidup & mindset. Podcast | Career | Finance | Beauty | Self Growth"
+        "angle_desc": "If the angle is personal life, lifestyle, skincare, career, mindset, relationships, personal finance, or self growth.",
+        "bio": "Insight clips for life & mindset upgrades. Podcasts | Careers | Finance | Beauty | Self Growth"
     },
     "Creator": {
         "akun_tujuan": "Creator.Mereska",
-        "angle_desc": "Kalau angle-nya konten digital, AI, affiliate, tools, clipping, monetisasi, atau cara menghasilkan uang dari konten.",
+        "angle_desc": "If the angle is digital content, AI, affiliates, tools, clipping, monetization, or how to make money from content.",
         "bio": "Ngulik konten digital biar bisa jadi uang. AI | Affiliate | Clips | Tools | Monetize"
     },
     "Muslim": {
         "akun_tujuan": "Muslim.Mereska",
-        "angle_desc": "Kalau angle-nya religi, rezeki, doa, ibadah, kerja karena Allah, keluarga Islami, atau bisnis dengan nilai Islam.",
+        "angle_desc": "If the angle is religion, sustenance, prayer, worship, work for Allah, Islamic family, or business with Islamic values.",
         "bio": "Reminder kerja, rezeki & hidup bernilai Islam. Islamic | Rezeki | Family | Work | Business"
     }
 }
@@ -619,7 +614,7 @@ HOOK V2 (MULTI-HOOK INTRO — WAJIB):
     if cfg and not getattr(cfg, "no_segment_trim", False):
         _silence_hint = ""
         if cfg and getattr(cfg, "silence_trim", False):
-            _silence_hint = "\n- AGRESIF buang bagian diam/silence/dead air. Jangan sertakan jeda lebih dari 0.5 detik."
+            _silence_hint = "\\n- AGGRESSIVELY remove the silence/dead air. Do not include a delay of more than 0.5 seconds."
         _segment_prompt = f"""
 
 SEGMENT-BASED TRIMMING (KEEP SEGMENTS — WAJIB):
@@ -933,7 +928,7 @@ def analyze_with_nvidia(transkrip_lengkap: str, cfg) -> list[dict]:
     print(f"[3/3] Menganalisis Top {cfg.jumlah_clip} momen menggunakan NVIDIA ({cfg.nvidia_model})...")
     
     if not cfg.api_key_nvidia:
-        raise ValueError("NVIDIA_API_KEY tidak ditemukan di environment.")
+        raise ValueError("NVIDIA_API_KEY not found in environment.")
 
     client = OpenAI(
         base_url="https://integrate.api.nvidia.com/v1",
@@ -1138,7 +1133,7 @@ def analyze_with_ai(transkrip_lengkap: str, cfg) -> list[dict]:
     
     if provider == "nvidia":
         if not cfg.api_key_nvidia:
-            print("⚠️ NVIDIA_API_KEY tidak ditemukan! Mencoba fallback ke Gemini...")
+            print("⚠️ NVIDIA_API_KEY not found! Trying to fallback to Gemini...")
         else:
             try:
                 return analyze_with_nvidia(transkrip_lengkap, cfg)

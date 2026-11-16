@@ -33,8 +33,7 @@ def _download_single_source(
     cache_dir: str,
     download_source_height: str | int = "max",
 ) -> str:
-    """
-    Download a single source video and cache it.
+    """Download a single source video and cache it.
 
     Parameters
     ----------
@@ -54,8 +53,7 @@ def _download_single_source(
     Raises
     ------
     RuntimeError
-        If download fails.
-    """
+        If download fails."""
     sid = source["id"]
     platform = source["platform"]
     cached_path = os.path.join(cache_dir, f"{sid}.mp4")

@@ -62,15 +62,14 @@ def buat_video_split_screen(
     label="SplitScreen",
     broll_data=None,
 ):
-    """
-    Render a split-screen video layout containing two vertically stacked views for multi-speaker contexts.
+    """Render a split-screen video layout containing two vertically stacked views for multi-speaker contexts.
 
     Args:
         input_video (str): Path to the input video.
         output_video (str): Path to save the final rendered video.
         start_clip (float): Start timestamp in seconds.
         end_clip (float): End timestamp in seconds.
-        rasio (str): Output ratio string ('9:16' or '16:9').
+        ratio (str): Output ratio string ('9:16' or '16:9').
         cfg: Configuration object.
         broll_data (list, optional): B-roll metadata for overlaying.
         label (str, optional): Rendering progress label.
@@ -80,11 +79,10 @@ def buat_video_split_screen(
 
     Side Effects:
         Allocates memory for multiple face bounding boxes.
-        Writes to `output_video` utilizing FFMPEG via stdin pipe.
+        Writes to `output_video` using FFMPEG via stdin pipe.
 
     Raises:
-        ValueError/Exception if the dimensions calculation or model fails.
-    """
+        ValueError/Exception if the dimensions calculation or model fails."""
     from clipping.diarization import get_active_speaker, get_active_speakers
 
     STEP_DETEKSI     = cfg.track_step if cfg.track_step is not None else 0.25

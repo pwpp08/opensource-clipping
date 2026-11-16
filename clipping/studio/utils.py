@@ -62,15 +62,13 @@ run_ffmpeg_with_progress = _ffmpeg_utils.run_ffmpeg_with_progress
 
 
 def _get_cv2_interpolation(cfg=None):
-    """
-    Resolve OpenCV interpolation mode from runtime config.
+    """Resolve OpenCV interpolation mode from runtime config.
 
     Args:
         cfg: Runtime config that may contain `video_scale_algo`.
 
     Returns:
-        OpenCV interpolation constant.
-    """
+        OpenCV interpolation constant."""
     algo = str(
         getattr(cfg, "video_scale_algo", os.environ.get("OSC_VIDEO_SCALE_ALGO", "lanczos"))
     ).lower()
@@ -84,8 +82,7 @@ def _get_cv2_interpolation(cfg=None):
 
 
 def _resize_frame(frame, size, cfg=None):
-    """
-    Resize frame using configured interpolation algorithm.
+    """Resize frame using configured interpolation algorithm.
 
     Args:
         frame: Input image/frame array.
@@ -93,8 +90,7 @@ def _resize_frame(frame, size, cfg=None):
         cfg: Runtime config that may define `video_scale_algo`.
 
     Returns:
-        Resized frame.
-    """
+        Resized frame."""
     return cv2.resize(frame, size, interpolation=_get_cv2_interpolation(cfg))
 
 
@@ -119,15 +115,14 @@ def _is_vertical_ratio(rasio: str) -> bool:
 
 
 def _get_render_dims(cfg, rasio, source_h=1080):
-    """
-    Calculate target output resolution based on config and aspect ratio.
+    """Calculate target output resolution based on config and aspect ratio.
     If mode is 'source', it uses the provided source_h as the base dimension.
 
     Supported ratios: 9:16, 16:9, 1:1, 3:4, 4:5.
 
     Args:
         cfg: Runtime config object that specifies `render_output_height`.
-        rasio (str): The target aspect ratio.
+        ratio (str): The target aspect ratio.
         source_h (int): The original source video height in pixels.
 
     Returns:
@@ -137,8 +132,7 @@ def _get_render_dims(cfg, rasio, source_h=1080):
         None
 
     Raises:
-        ValueError: If config contains an invalid non-integer height when not 'source'.
-    """
+        ValueError: If config contains an invalid non-integer height when not 'source'."""
     mode = str(getattr(cfg, "render_output_height", "1080")).lower()
     if mode == "source":
         target_h_base = source_h

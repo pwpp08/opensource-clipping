@@ -65,15 +65,14 @@ def buat_video_hybrid(
     broll_data=None,
     label="Hybrid",
 ):
-    """
-    Render a hybrid video combining main footage and b-roll with dynamic panning based on face tracking.
+    """Render a hybrid video combining main footage and b-roll with dynamic panning based on face tracking.
 
     Args:
         input_video (str): Source video file path.
         output_video (str): Output video file path.
         start_clip (float): Start timestamp in seconds.
         end_clip (float): End timestamp in seconds.
-        rasio (str): Output ratio string ('9:16' or '16:9').
+        ratio (str): Output ratio string ('9:16' or '16:9').
         cfg: Configuration object for parameters like deadzones and smoothing factors.
         broll_data (list, optional): Metadata dicts of B-roll timing to overlay.
         label (str, optional): The UI label used for rendering progress output.
@@ -86,8 +85,7 @@ def buat_video_hybrid(
         Loads B-Roll clips and composites them automatically.
 
     Raises:
-        Exceptions are typically handled and may cause a hard exit if critical video rendering fails.
-    """
+        Exceptions are typically handled and may cause a hard exit if critical video rendering fails."""
     if broll_data is None:
         broll_data = []
 

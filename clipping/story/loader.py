@@ -1,10 +1,8 @@
-"""
-clipping.story.loader — JSON Parser & Validator untuk Story Clip
+"""clipping.story.loader — JSON Parser & Validator for Story Clips
 
-Memparse dan memvalidasi:
-  - sources.json  → registry video sumber
-  - story_recipe.json → resep cerita (clip, scene, hook, highlight)
-"""
+Parsing and validating:
+  - sources.json → source video registry
+  - story_recipe.json → story recipe (clip, scene, hook, highlight)"""
 
 import json
 import os

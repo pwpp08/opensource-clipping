@@ -48,14 +48,13 @@ _is_vertical_ratio = utils._is_vertical_ratio
 RATIO_MAP = utils.RATIO_MAP
 
 def siapkan_glitch_video(rasio, cfg, video_encoder, source_h=1080, custom_dims=None):
-    """
-    Generate a 1-second VHS glitch transition video.
+    """Generate a 1-second VHS glitch transition video.
 
     Primary: download glitch video from cfg.url_glitch_video via yt_dlp.
     Fallback: generate RGB-shift noise via FFmpeg lavfi filters if download fails.
 
     Args:
-        rasio (str): Target output ratio string ('9:16', '16:9', etc.).
+        ratio (str): Target output ratio string ('9:16', '16:9', etc.).
         cfg: Runtime config (used for render_output_height, video_scale_algo,
              and url_glitch_video).
         video_encoder: Encoder descriptor dict from detect_video_encoder().
@@ -63,8 +62,7 @@ def siapkan_glitch_video(rasio, cfg, video_encoder, source_h=1080, custom_dims=N
         custom_dims (tuple|None): Optional (width, height) override.
 
     Returns:
-        str: Path to the generated .ts glitch transition file, or None on failure.
-    """
+        str: Path to the generated .ts glitch transition file, or None on failure."""
     if custom_dims:
         out_w, out_h = custom_dims
     else:
@@ -82,7 +80,7 @@ def siapkan_glitch_video(rasio, cfg, video_encoder, source_h=1080, custom_dims=N
         try:
             url_glitch = getattr(cfg, "url_glitch_video", None)
             if url_glitch:
-                print("⬇️ Downloading glitch video...", flush=True)
+                print("⬇️ Downloading video glitch...", flush=True)
                 YoutubeDL(
                     {
                         "format": "best[ext=mp4]",
@@ -93,7 +91,7 @@ def siapkan_glitch_video(rasio, cfg, video_encoder, source_h=1080, custom_dims=N
                 ).download([url_glitch])
                 use_downloaded = True
             else:
-                print("⚠️ url_glitch_video tidak diset, generate glitch sendiri...", flush=True)
+                print("⚠️ url_glitch_video not set, generate glitch yourself...", flush=True)
         except Exception as e:
             print(f"⚠️ Download glitch gagal: {e}. Fallback ke generate sendiri...", flush=True)
             # Clean up partial download

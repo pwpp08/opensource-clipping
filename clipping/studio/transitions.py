@@ -134,16 +134,14 @@ def _raw_filename(entry: dict) -> str:
 
 
 def download_transition_raw(entry: dict, cfg) -> str | None:
-    """
-    Download a single transition video from YouTube if not already cached.
+    """Download a single transition video from YouTube if not already cached.
 
     Args:
         entry: A dict from ``TMP_TRANSITION_POOL``.
-        cfg:   Runtime config (used for ``base_dir``).
+        cfg: Runtime config (used for ``base_dir``).
 
     Returns:
-        Absolute path to the downloaded raw MP4, or None on failure.
-    """
+        Absolute path to the downloaded raw MP4, or None on failure."""
     cache_dir = _get_cache_dir(cfg)
     raw_path = os.path.join(cache_dir, _raw_filename(entry))
 
@@ -255,8 +253,7 @@ def prepare_transition_clip(
     clip_duration: float | None = None,
     custom_dims: tuple | None = None,
 ) -> str | None:
-    """
-    Extract the usable portion of a downloaded transition asset,
+    """Extract the usable portion of a downloaded transition asset,
     crop/scale it to match the target output dimensions, and encode
     it as a ``.ts`` segment ready for concatenation or overlay.
 
@@ -264,18 +261,17 @@ def prepare_transition_clip(
     extracts ``clip_duration`` seconds of usable content.
 
     Args:
-        entry:          Pool entry dict (must have ``"raw_path"``).
-        rasio:          Target aspect ratio string.
-        cfg:            Runtime config.
-        video_encoder:  Encoder descriptor dict.
-        source_h:       Source video height for dimension calculation.
-        clip_duration:  How many seconds to extract.  None means the
+        entry: Pool entry dict (must have ``"raw_path"``).
+        ratio: Target aspect ratio string.
+        cfg: Runtime config.
+        video_encoder: Encoder descriptor dict.
+        source_h: Source video height for dimension calculation.
+        clip_duration: How many seconds to extract.  None means the
                         entry's own ``duration`` field (or 3s fallback).
-        custom_dims:    Optional ``(w, h)`` to override calculated dims.
+        custom_dims: Optional ``(w, h)`` to override calculated dims.
 
     Returns:
-        Path to the prepared ``.ts`` file, or None on failure.
-    """
+        Path to the prepared ``.ts`` file, or None on failure."""
     raw_path = entry.get("raw_path")
     if not raw_path or not os.path.exists(raw_path):
         return None

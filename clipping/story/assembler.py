@@ -39,8 +39,7 @@ def trim_scene(
     output_path: str,
     reencode: bool = False,
 ) -> str:
-    """
-    Trim a segment from a video file using FFmpeg.
+    """Trim a segment from a video file using FFmpeg.
 
     Parameters
     ----------
@@ -59,8 +58,7 @@ def trim_scene(
     Returns
     -------
     str
-        Path to the trimmed output file.
-    """
+        Path to the trimmed output file."""
     duration = end - start
 
     if reencode:
@@ -152,8 +150,7 @@ def concat_scenes(
     output_path: str,
     transition: str = "cut",
 ) -> str:
-    """
-    Concatenate multiple scene segments into a single video.
+    """Concatenate multiple scene segments into a single video.
 
     Parameters
     ----------
@@ -169,10 +166,9 @@ def concat_scenes(
     Returns
     -------
     str
-        Path to the concatenated output.
-    """
+        Path to the concatenated output."""
     if not scene_paths:
-        raise ValueError("Tidak ada scene untuk di-concat.")
+        raise ValueError("There are no scenes to repaint.")
 
     if len(scene_paths) == 1:
         # Single scene, just copy
@@ -283,8 +279,7 @@ def _add_text_overlay(
     box_color: str = "black@0.5",
     position: str = "center",
 ) -> str:
-    """
-    Add a text overlay on top of a video using FFmpeg drawtext filter.
+    """Add a text overlay on top of a video using FFmpeg drawtext filter.
 
     Parameters
     ----------
@@ -295,8 +290,7 @@ def _add_text_overlay(
     output_path : str
         Output video path.
     position : str
-        One of ``"center"``, ``"bottom"``, ``"top"``.
-    """
+        One of ``"center"``, ``"bottom"``, ``"top"``."""
     # Escape special chars for FFmpeg drawtext
     escaped = text.replace("'", "'\\''").replace(":", "\\:")
 
@@ -351,8 +345,7 @@ def assemble_hook(
     output_dir: str,
     ratio: str = "9:16",
 ) -> str | None:
-    """
-    Assemble the hook segment for a single clip.
+    """Assemble the hook segments for a single clip.
 
     Parameters
     ----------
@@ -370,8 +363,7 @@ def assemble_hook(
     Returns
     -------
     str or None
-        Path to the rendered hook video, or None if assembly failed.
-    """
+        Path to the rendered hook video, or None if assembly failed."""
     cid = clip_config["clip_id"]
     hook = clip_config["hook"]
     scenes = hook.get("scenes", [])
@@ -436,8 +428,7 @@ def assemble_highlight(
     output_dir: str,
     ratio: str = "9:16",
 ) -> str | None:
-    """
-    Assemble the highlight segment for a single clip.
+    """Assemble the highlight segment for a single clip.
 
     Parameters
     ----------
@@ -455,8 +446,7 @@ def assemble_highlight(
     Returns
     -------
     str or None
-        Path to the rendered highlight video, or None if assembly failed.
-    """
+        Path to the rendered highlight video, or None if assembly failed."""
     cid = clip_config["clip_id"]
     highlight = clip_config["highlight"]
     scenes = highlight.get("scenes", [])

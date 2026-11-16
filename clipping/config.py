@@ -1,8 +1,6 @@
-"""
-clipping.config — Master Configuration (Dashboard)
+"""clipping.config — Master Configuration (Dashboard)
 
-Menyimpan semua default value dan membangun config dari CLI args.
-"""
+Saves all default values and builds config from CLI args."""
 
 import argparse
 import hashlib
@@ -243,7 +241,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--source",
         choices=["youtube", "tiktok", "instagram", "gdrive"],
         default=SOURCE_PLATFORM,
-        help="Video source platform. Determines download behavior and subtitle availability.",
+        help="Video source platforms. Determines download behavior and subtitle availability.",
     )
     p.add_argument(
         "--tiktok",
@@ -366,7 +364,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--split-trigger",
         choices=["diarization", "face"],
         default="diarization",
-        help="The trigger used to decide when to split the screen. 'diarization' uses audio (who is talking), 'face' uses video (how many faces are visible).",
+        help="The trigger is used to decide when to split the screen. 'diarization' uses audio (who is talking), 'face' uses video (how many faces are visible).",
     )
 
 
@@ -717,7 +715,7 @@ def _build_parser() -> argparse.ArgumentParser:
             "Edge glow rendering strategy. "
             "'default': 10s loop (original, may stutter at loop point). "
             "'smooth': 10s loop with auto-adjusted speed for seamless looping. "
-            "'full': render glow for the full video duration (no loop needed, "
+            "'full': render glow for the full video duration (no loop needed,"
             "heavier but zero stutter)."
         ),
     )
@@ -793,7 +791,7 @@ def build_config(argv: list[str] | None = None) -> SimpleNamespace:
     # Validate watermark args
     if args.watermark:
         if not args.text and not args.image:
-            parser.error("--watermark membutuhkan --text atau --image.")
+            parser.error("--watermark requires --text or --image.")
         if not (1 <= args.opacity <= 100):
             parser.error(f"--opacity harus antara 1-100, diberikan: {args.opacity}")
         if args.padding < 0:
